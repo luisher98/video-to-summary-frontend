@@ -1,4 +1,4 @@
-# TubeSummary by Luis Hernández
+# TubeSummary web app by Luis Hernández
 
 This is the frontend web app of a YouTube summarization tool that utilizes OpenAI's GPT-3 language model to generate summaries of audio transcripts by providing the youtube link.
 You can also check out the [server](https://github.com/luisher98/tubesummary-server).
