@@ -1,23 +1,25 @@
-import {createContext, useContext, useState} from "react";
+'use client'
+import { createContext, useContext, useReducer } from "react";
+
+const initialState = { data: null };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_DATA":
+      return { ...state, data: action.payload };
+    default:
+      return state;
+  }
+}
 
 const Context = createContext({});
 
+export function ContextProvider({ children }) {
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-function getSummary(url) {
-    return fetch(`http://localhost:5000/api/summary?url=${url}`)
-        .then(response => response.json())
-        .then(data => data.summary);
+  return <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>;
 }
 
-
-export function ContextProvider({children}) {
-    const [input, setInput] = useState("");
- 
-    const [summary, setSummary] = useState("");
-
-    return (
-        <Context.Provider value={{input, setInput, summary, setSummary}}>
-            {children}
-        </Context.Provider>
-    );
+export function useContextValue() {
+  return useContext(Context);
 }

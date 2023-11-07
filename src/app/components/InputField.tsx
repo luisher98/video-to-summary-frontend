@@ -1,4 +1,35 @@
+"use client";
+
+import { useState } from "react";
+
+import { useContextValue } from "../context/context";
+import { set } from "zod";
+
 export default function InputField() {
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { state, dispatch } = useContextValue();
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:5000/api/summary?url=${url}`,
+      );
+      const data = await response.json();
+      dispatch({ type: "SET_DATA", payload: data });
+      setUrl("");
+      setLoading(false);
+
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="relative overflow-hidden">
       <div className="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 sm:py-24 lg:px-8">
@@ -12,27 +43,32 @@ export default function InputField() {
           </p>
 
           <div className="relative mx-auto mt-7 max-w-xl sm:mt-12">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="relative z-10 flex space-x-3 rounded-lg border bg-white p-3 shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900/[.2]">
                 <div className="flex-[1_0_0%]">
                   <label
                     htmlFor="hs-search-article-1"
                     className="block text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    <span className="sr-only">https://www.youtube.com/watch?v=aXvDEmo6uS4</span>
+                    <span className="sr-only">
+                      https://www.youtube.com/watch?v=aXvDEmo6uS4
+                    </span>
                   </label>
                   <input
-                    type="email"
+                    type="text"
                     name="hs-search-article-1"
                     id="hs-search-article-1"
                     className="block w-full rounded-md border-transparent p-3 dark:bg-gray-800 dark:text-gray-400"
-                    placeholder="https://www.youtube.com/watch?v=aXvDEmo6uS4"
+                    placeholder=""
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
-                  <a
+                  <button
                     className="inline-flex items-center justify-center gap-2 rounded-md border border-transparent bg-blue-500 p-4 text-sm font-semibold text-white transition-all hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     href="#"
+                    type="submit"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -43,13 +79,14 @@ export default function InputField() {
                     >
                       <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                     </svg>
-                  </a>
+                  </button>
                 </div>
               </div>
             </form>
           </div>
         </div>
       </div>
+
     </div>
   );
 }
