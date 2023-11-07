@@ -34,4 +34,7 @@ Before you begin, ensure you have met the following requirements:
    yarn install
 4. Start the next.js application
     ```
-    npm run dev
+   npm run dev
+5. Start the json-server in a new terminal window
+   ```
+   npx json-server -p 3500 -w ./src/data/data.json
