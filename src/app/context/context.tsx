@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useState } from "react";
 
 const initialState = { data: null };
 
@@ -17,7 +17,10 @@ const Context = createContext({});
 export function ContextProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  return <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>;
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  return <Context.Provider value={{ state, dispatch, url, setUrl, loading, setLoading }}>{children}</Context.Provider>;
 }
 
 export function useContextValue() {

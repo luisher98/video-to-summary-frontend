@@ -1,17 +1,21 @@
-'use client'
+"use client";
 import SummaryContent from "./SummaryContent";
-
 
 import { useContextValue } from "../context/context";
 
 export default function Summary() {
   const { state } = useContextValue();
+
+  console.log(state);
+
+
   return (
     <>
-      <SummaryContent
-        title={"Summary"}
-        summary={"state.data"}
-      />
+      {state ? (
+        <>
+          <SummaryContent title={"Summary"} summary={state} />
+        </>
+      ) : null}
     </>
   );
 }
