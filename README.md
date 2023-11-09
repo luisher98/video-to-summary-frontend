@@ -26,7 +26,7 @@ Before you begin, ensure you have met the following requirements:
    git clone https://github.com/luisher98/tubesummary-webapp.git
 2. Navigate to the project directory:
    ```
-   cd tubesummary-webapp
+   cd tubesummary-app
 3. Install dependencies
    ```
    npm install
