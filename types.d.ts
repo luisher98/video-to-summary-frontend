@@ -1,17 +1,22 @@
-type VideoSummary = {
+type Summary = null | {
   summary: string;
 };
 
-type VideoInfo = {
+interface Thumbnail {
+  url: string;
+  width: number;
+  height: number;
+}
+
+type VideoInfo = null | {
   id: string;
   title: string;
-  url: string;
   thumbnail: {
-    url: string;
+    default: Thumbnail;
+    medium: Thumbnail;
+    high: Thumbnail;
+    standard: Thumbnail;
+    maxres: Thumbnail;
   };
-  channel: {
-    name: string;
-    url: string;
-  };
-};
-
+  channel: string;
+}

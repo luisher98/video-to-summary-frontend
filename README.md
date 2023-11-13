@@ -37,4 +37,4 @@ Before you begin, ensure you have met the following requirements:
    npm run dev
 5. Start the json-server in a new terminal window
    ```
-   npx json-server -p 3500 -w ./src/data/data.json
+   npx json-server -p 3500 -w ./data/data.json
