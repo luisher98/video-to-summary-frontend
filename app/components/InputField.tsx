@@ -3,7 +3,7 @@
 import { ContextProvider, useContextValue } from "../context/context";
 import Heading from "./Heading";
 import Form from "./Form";
-import FetchSummary from "../utils/FetchSummary";
+import FetchSummary from "../../utils/getVideoSummary";
 
 export default function InputField() {
   const { dispatch, url, setUrl, loading, setLoading } =

@@ -5,7 +5,6 @@ type VideoSummary = {
 type VideoInfo = {
   id: string;
   title: string;
-  description: string;
   url: string;
   thumbnail: {
     url: string;
