@@ -10,7 +10,7 @@ export default function SummaryContent({ title, summary }) {
               </h2>
 
               <p className="text-lg text-gray-800 dark:text-gray-200">
-                {summary && <>{summary.summary}</>}
+                {summary}
               </p>
             </div>
           </div>

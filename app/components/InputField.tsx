@@ -5,16 +5,20 @@ import { useVideoSummary } from "../context/VideoContext";
 
 import Heading from "./Heading";
 import getSummary from "../../lib/getVideoSummary";
+import getInfo from "@/lib/getVideoInfo";
 
 export default function InputField() {
   const [url, setUrl] = useState("");
-  const { setSummary } = useVideoSummary();
+  const { setSummary, setVideoInfo } = useVideoSummary();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const summary = await getSummary(url);
+      const info: VideoInfo = await getInfo(url);
+      const summary: Summary = await getSummary(url);
+      
       setSummary(summary);
+      setVideoInfo(info);
     } catch (error) {
       console.error(error);
     } finally {
