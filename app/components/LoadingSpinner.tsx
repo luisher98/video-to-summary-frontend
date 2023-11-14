@@ -3,12 +3,17 @@ import React from "react";
 export default function LoadingSpinner() {
   return (
     <>
-      <div
-        class="inline-block h-8 w-8 animate-spin rounded-full border-[3px] border-current border-t-transparent text-blue-600 dark:text-blue-500"
-        role="status"
-        aria-label="loading"
-      >
-        <span class="sr-only">Loading...</span>
+      <div class="flex h-[20vh] items-center justify-center">
+        <div class="flex flex-col items-center">
+          <div
+            class="inline-block h-12 w-12 animate-spin rounded-full border-[3px] border-current border-t-transparent text-blue-600 dark:text-blue-500"
+            role="status"
+            aria-label="loading"
+          >
+            <span class="sr-only">Loading...</span>
+          </div>
+          <p className="text-gray-600 dark:text-gray-300 p-4">Loading...</p>
+        </div>
       </div>
     </>
   );

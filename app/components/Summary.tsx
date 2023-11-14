@@ -6,19 +6,17 @@ import VideoCard from "./VideoCard";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Summary() {
-  const { summary, videoInfo } = useVideoSummary();
+  const { summary, videoInfo, isLoading } = useVideoSummary();
   return (
     <>
-      <div className="h-100">
-        {summary ? (
-          <>
-            <VideoCard videoInfo={videoInfo} />
-            <SummaryContent title={"Summary"} summary={summary} />
-          </>
-        ) : (
-          <LoadingSpinner />
-        )}
-      </div>
+      {summary ? (
+        <>
+          <VideoCard videoInfo={videoInfo} />
+          <SummaryContent title={videoInfo?.title} summary={summary} />
+        </>
+      ) : ( isLoading ? <LoadingSpinner /> : null
+        
+      )}
     </>
   );
 }

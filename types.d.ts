@@ -1,5 +1,5 @@
 type Summary = null | {
-  summary: string;
+  content: string;
 };
 
 interface Thumbnail {
@@ -8,7 +8,7 @@ interface Thumbnail {
   height: number;
 }
 
-type VideoInfo = null | {
+type VideoInfo = {
   id: string;
   title: string;
   thumbnail: {
@@ -19,4 +19,8 @@ type VideoInfo = null | {
     maxres: Thumbnail;
   };
   channel: string;
-}
+};
+
+type Loading = null | {
+  isLoading: boolean;
+};

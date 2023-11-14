@@ -9,19 +9,23 @@ import getInfo from "@/lib/getVideoInfo";
 
 export default function InputField() {
   const [url, setUrl] = useState("");
-  const { setSummary, setVideoInfo } = useVideoSummary();
+  const { setSummary, setVideoInfo, setIsLoading, isLoading } = useVideoSummary();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const info: VideoInfo = await getInfo(url);
       const summary: Summary = await getSummary(url);
-      
+
       setSummary(summary);
       setVideoInfo(info);
+      
     } catch (error) {
       console.error(error);
     } finally {
+      setIsLoading(false);
+      setUrl("");
     }
   };
 
@@ -50,6 +54,7 @@ export default function InputField() {
                     placeholder=""
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="flex-[0_0_auto]">
@@ -57,6 +62,7 @@ export default function InputField() {
                     className="inline-flex items-center justify-center gap-2 rounded-md border border-transparent bg-blue-500 p-4 text-sm font-semibold text-white transition-all hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     href="#"
                     type="submit"
+                    disabled={isLoading}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

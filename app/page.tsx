@@ -15,13 +15,11 @@ export const metadata = {
 export default function Home() {
   return (
     <>
-      <Layout>
-        <DarkModeSwitch />
-        <VideoContextProvider>
-          <InputField />
-          <Summary />
-        </VideoContextProvider>
-      </Layout>
+      <DarkModeSwitch />
+      <VideoContextProvider>
+        <InputField />
+        <Summary />
+      </VideoContextProvider>
     </>
   );
 }
