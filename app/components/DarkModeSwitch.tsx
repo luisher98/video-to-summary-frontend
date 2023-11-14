@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useEffect, useState } from "react";
 
 export default function DartModeSwitch() {
@@ -13,7 +15,7 @@ export default function DartModeSwitch() {
         window.matchMedia("(prefers-color-scheme: dark)").matches);
 
     setIsDark(darkModeOn);
-    
+
     if (darkModeOn) {
       document.documentElement.classList.add("dark");
     } else {
@@ -35,7 +37,7 @@ export default function DartModeSwitch() {
   }
 
   return (
-    <div className="flex flex-row-reverse space-x-2 p-4">
+    <div className="flex flex-row-reverse justify-between space-x-2 p-4">
       <input
         id="btn"
         type="checkbox"
@@ -55,6 +57,11 @@ export default function DartModeSwitch() {
           }`}
         ></div>
       </label>
+      <Link href={"/"} className="dark:text-gray-400 flex ">
+      <p>{`<`}</p>
+      <p className="underline pl-2"> Back to website</p>
+      </Link>
+
     </div>
   );
 }

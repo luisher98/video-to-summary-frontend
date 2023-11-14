@@ -1,6 +1,6 @@
-export default async function getSummary(url: string) {
+export default async function getSummary(url: string, words: number) {
   try {
-    const response = await fetch(`/api/video-summary?url=${url}`, {
+    const response = await fetch(`/api/video-summary?url=${url}?words=${words}`, {
       headers: {
         "Content-Type": "application/json",
       },

@@ -1,4 +1,11 @@
-export default function Form({ url, setUrl, handleSubmit, isLoading }) {
+export default function Form({
+  url,
+  setUrl,
+  handleSubmit,
+  isLoading,
+  numberOfWords,
+  setNumberOfWords,
+}) {
   return (
     <>
       <div className="relative mx-auto mt-7 max-w-xl sm:mt-12">
@@ -24,6 +31,7 @@ export default function Form({ url, setUrl, handleSubmit, isLoading }) {
                 disabled={isLoading}
               />
             </div>
+
             <div className="flex-[0_0_auto]">
               <button
                 className="inline-flex items-center justify-center gap-2 rounded-md border border-transparent bg-blue-500 p-4 text-sm font-semibold text-white transition-all hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
@@ -43,6 +51,23 @@ export default function Form({ url, setUrl, handleSubmit, isLoading }) {
               </button>
             </div>
           </div>
+          <label
+            htmlFor="minmax-Words"
+            className="mt-4 block text-sm font-medium text-gray-900 dark:text-gray-400"
+          >
+            Words: {numberOfWords}
+          </label>
+          <input
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            id="minmax-Words"
+            type="range"
+            min="100"
+            max="500"
+            step="100"
+            value={numberOfWords}
+            onChange={(e) => setNumberOfWords(e.target.value)}
+            disabled={isLoading}
+          />
         </form>
       </div>
     </>

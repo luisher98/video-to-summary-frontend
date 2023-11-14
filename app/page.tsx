@@ -1,5 +1,5 @@
 import DarkModeSwitch from "./components/DarkModeSwitch";
-import Layout from "./components/Layout";
+import Footer from "./components/Footer";
 import InputField from "./components/InputField";
 import Summary from "./components/Summary";
 
@@ -20,6 +20,7 @@ export default function Home() {
         <InputField />
         <Summary />
       </VideoContextProvider>
+      <Footer />
     </>
   );
 }

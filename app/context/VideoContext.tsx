@@ -20,12 +20,13 @@ export function VideoContextProvider({
 }) {
   const [summary, setSummary] = useState<Summary>(null);
   const [videoInfo, setVideoInfo] = useState<VideoInfo>(null);
+  const [numberOfWords, setNumberOfWords] = useState<number>(100);
 
   const [isLoading, setIsLoading] = useState<Loading>(false);
 
   return (
     <VideoContext.Provider
-      value={{ summary, setSummary, videoInfo, setVideoInfo, isLoading, setIsLoading }}
+      value={{ summary, setSummary, videoInfo, setVideoInfo, isLoading, setIsLoading, numberOfWords, setNumberOfWords }}
     >
       {children}
     </VideoContext.Provider>
