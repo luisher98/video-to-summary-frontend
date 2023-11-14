@@ -11,8 +11,8 @@ export default function Summary() {
     <>
       {summary ? (
         <>
-          <VideoCard videoInfo={videoInfo} />
-          <SummaryContent title={videoInfo?.title} summary={summary} />
+          <VideoCard videoInfo={videoInfo?.info} />
+          <SummaryContent title={`500 word summary of: '${videoInfo?.info.title}'`} summary={summary} />
         </>
       ) : ( isLoading ? <LoadingSpinner /> : null
         
