@@ -9,6 +9,8 @@ type VideoContext = {
   setVideoInfo: React.Dispatch<React.SetStateAction<VideoInfo>>;
   isLoading: Loading;
   setIsLoading: React.Dispatch<React.SetStateAction<Loading>>;
+  numberOfWords: number;
+  setNumberOfWords: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const VideoContext = createContext<VideoContext | null>(null);

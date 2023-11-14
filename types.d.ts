@@ -8,7 +8,7 @@ interface Thumbnail {
   height: number;
 }
 
-type VideoInfo = {
+type VideoInfo = null | {
   id: string;
   title: string;
   thumbnail: {
@@ -21,6 +21,6 @@ type VideoInfo = {
   channel: string;
 };
 
-type Loading = null | {
+type Loading = {
   isLoading: boolean;
 };
