@@ -1,4 +1,6 @@
-'use client'
+"use client";
+
+import Link from "next/link";
 
 import { useEffect, useState } from "react";
 
@@ -11,7 +13,9 @@ export default function DartModeSwitch() {
       localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
+
     setIsDark(darkModeOn);
+
     if (darkModeOn) {
       document.documentElement.classList.add("dark");
     } else {
@@ -33,7 +37,7 @@ export default function DartModeSwitch() {
   }
 
   return (
-    <div className="flex flex-row-reverse space-x-2 p-4">
+    <div className="flex flex-row-reverse justify-between space-x-2 p-4">
       <input
         id="btn"
         type="checkbox"
@@ -43,16 +47,21 @@ export default function DartModeSwitch() {
       />
       <label
         htmlFor="btn"
-        className={`relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300 ${
-          isDark ? "bg-white shadow-innerRing" : "bg-gray-800"
+        className={`relative h-6 w-12 cursor-pointer rounded-full transition-colors duration-300 ${
+          isDark ? "shadow-innerRing bg-white" : "bg-gray-800"
         }`}
       >
         <div
-          className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-500 ${
+          className={`absolute left-1 top-1 h-4 w-4 rounded-full transition-transform duration-500 ${
             isDark ? "translate-x-6 bg-gray-800" : "bg-white"
           }`}
         ></div>
       </label>
+      <Link href={"/"} className="dark:text-gray-400 flex ">
+      <p>{`<`}</p>
+      <p className="underline pl-2"> Back to website</p>
+      </Link>
+
     </div>
   );
 }

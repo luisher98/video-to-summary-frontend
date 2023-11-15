@@ -1,20 +1,15 @@
-export default async function getVideoSummary(url) {
+export default async function getSummary(url: string, words: number) {
   try {
-    // API call to the backend (using json-server instead for now)
-    // const response = await fetch(
-    //   `http://localhost:5000/api/summary?url=${url}`,
-    // );
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Network response failed");
-    }
-
+    const response = await fetch(`/api/video-summary?url=${url}?words=${words}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok)
+      throw new Error("Network response error", response.status);
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error:", error);
-    return null;
+    console.log(error);
   }
 }

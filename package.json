@@ -9,10 +9,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@t3-oss/env-nextjs": "^0.7.0",
-    "next": "^13.5.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "next": "^14.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -24,12 +23,13 @@
     "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.47.0",
-    "eslint-config-next": "^13.5.4",
+    "eslint-config-next": "^14.0.2",
     "postcss": "^8.4.27",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.5.1",
+    "sass": "^1.69.5",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   },
   "ct3aMetadata": {
     "initVersion": "7.22.0"
