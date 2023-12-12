@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import type { FormEvent } from "react";
 import { useVideoSummary } from "../context/VideoContext";
 
 import Heading from "./Heading";
@@ -19,12 +20,12 @@ export default function InputField() {
     setNumberOfWords,
   } = useVideoSummary();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const info: VideoInfo = await getInfo(url);
-      const summary: Summary = await getSummary(url, numberOfWords);
+      const info = await getInfo(url) as VideoInfo;
+      const summary = await getSummary(url, numberOfWords) as Summary;
 
       setSummary(summary);
       setVideoInfo(info);

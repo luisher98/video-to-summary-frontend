@@ -5,7 +5,7 @@ export default function Form({
   isLoading,
   numberOfWords,
   setNumberOfWords,
-}) {
+}: FormProps) {
   return (
     <>
       <div className="relative mx-auto mt-7 max-w-xl sm:mt-12">
@@ -35,7 +35,6 @@ export default function Form({
             <div className="flex-[0_0_auto]">
               <button
                 className="inline-flex items-center justify-center gap-2 rounded-md border border-transparent bg-blue-500 p-4 text-sm font-semibold text-white transition-all hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                href="#"
                 type="submit"
                 disabled={isLoading}
               >
@@ -58,14 +57,14 @@ export default function Form({
             Words: {numberOfWords}
           </label>
           <input
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
             id="minmax-Words"
             type="range"
             min="100"
             max="500"
             step="100"
             value={numberOfWords}
-            onChange={(e) => setNumberOfWords(e.target.value)}
+            onChange={(e) => setNumberOfWords(Number(e.target.value))}
             disabled={isLoading}
           />
         </form>
