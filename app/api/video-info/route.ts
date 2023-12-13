@@ -6,7 +6,7 @@ export async function GET(request: Request) {
       'Content-Type': 'application/json',
     },
   })
-  const data = await res.json()
+  const data = await res.json() as VideoInfo;
  
   return Response.json(data)
 }

@@ -6,8 +6,8 @@ export default async function getInfo(url: string) {
       },
     });
     if (!response.ok)
-      throw new Error("Network response error", response.status);
-    const data = await response.json();
+    throw new Error(`Network response error, ${response.status}`);
+    const data = await response.json() as VideoInfo;
     return data;
   } catch (error) {
     console.log(error);

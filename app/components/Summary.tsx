@@ -7,16 +7,17 @@ import LoadingSpinner from "./LoadingSpinner";
 
 export default function Summary() {
   const { summary, videoInfo, isLoading } = useVideoSummary();
+
   return (
     <>
-      {summary ? (
+      {summary && videoInfo ? (
         <>
-          <VideoCard videoInfo={videoInfo?.info} />
-          <SummaryContent title={`500 word summary of: '${videoInfo?.info.title}'`} summary={summary} />
+          <VideoCard videoInfo={videoInfo} />
+          <SummaryContent info={videoInfo} summary={summary} />
         </>
-      ) : ( isLoading ? <LoadingSpinner /> : null
-        
-      )}
+      ) : isLoading ? (
+        <LoadingSpinner />
+      ) : null}
     </>
   );
 }

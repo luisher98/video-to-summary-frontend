@@ -2,16 +2,7 @@
 
 import React, { createContext, useContext, useState } from "react";
 
-type VideoContext = {
-  summary: Summary;
-  setSummary: React.Dispatch<React.SetStateAction<Summary>>;
-  videoInfo: VideoInfo;
-  setVideoInfo: React.Dispatch<React.SetStateAction<VideoInfo>>;
-  isLoading: Loading;
-  setIsLoading: React.Dispatch<React.SetStateAction<Loading>>;
-  numberOfWords: number;
-  setNumberOfWords: React.Dispatch<React.SetStateAction<number>>;
-};
+
 
 const VideoContext = createContext<VideoContext | null>(null);
 
@@ -24,7 +15,7 @@ export function VideoContextProvider({
   const [videoInfo, setVideoInfo] = useState<VideoInfo>(null);
   const [numberOfWords, setNumberOfWords] = useState<number>(100);
 
-  const [isLoading, setIsLoading] = useState<Loading>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <VideoContext.Provider
