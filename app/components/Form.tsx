@@ -5,12 +5,20 @@ export default function Form({
   isLoading,
   numberOfWords,
   setNumberOfWords,
+  isVideoUnavailable,
+  isInputEmpty
 }: FormProps) {
   return (
     <>
       <div className="relative mx-auto mt-7 max-w-xl sm:mt-12">
         <form onSubmit={handleSubmit}>
-          <div className="relative z-10 flex space-x-3 rounded-lg border bg-white p-3 shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900/[.2]">
+          <div
+            className={`relative z-10 flex space-x-3 rounded-lg border bg-white p-3 shadow-lg shadow-gray-100  dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900/[.2] ${
+              isVideoUnavailable || isInputEmpty
+                ? "border-red-500 dark:border-red-500"
+                : ""
+            }`}
+          >
             <div className="flex-[1_0_0%]">
               <label
                 htmlFor="hs-search-article-1"
@@ -50,6 +58,17 @@ export default function Form({
               </button>
             </div>
           </div>
+          {isVideoUnavailable && (
+            <p class="mt-2 text-left text-xs text-red-600 dark:text-red-600">
+              <span class="font-medium">Something went wrong!</span> Check if
+              the video exists or if the format is correct.
+            </p>
+          )}
+          {isInputEmpty && (
+            <p class="mt-2 text-left text-xs text-red-600 dark:text-red-600">
+              Cant be empty!
+            </p>
+          )}
           <label
             htmlFor="minmax-Words"
             className="mt-4 block text-sm font-medium text-gray-900 dark:text-gray-400"

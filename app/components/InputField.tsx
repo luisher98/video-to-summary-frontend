@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import type { FormEvent } from "react";
-import { useVideoSummary } from "../context/VideoContext";
+import { useVideoContext } from "../context/VideoContext";
 
 import Heading from "./Heading";
 import getSummary from "../../lib/getVideoSummary";
 import getInfo from "@/lib/getVideoInfo";
 import Form from "./Form";
+import getVideoStatus from "@/lib/getVideoStatus";
 
 export default function InputField() {
   const [url, setUrl] = useState("");
@@ -18,14 +19,30 @@ export default function InputField() {
     isLoading,
     numberOfWords,
     setNumberOfWords,
-  } = useVideoSummary();
+    setIsVideoUnavailable,
+    isVideoUnavailable,
+    isInputEmpty,
+    setIsInputEmpty,
+  } = useVideoContext();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    if (!url) {
+      setIsInputEmpty(true);
+      setIsLoading(false);
+      return;
+    }
     try {
-      const info = await getInfo(url) as VideoInfo;
-      const summary = await getSummary(url, numberOfWords) as Summary;
+      const status = await getVideoStatus(url);
+      if (!status) {
+        setIsVideoUnavailable(true);
+        setIsLoading(false);
+        return;
+      }
+
+      const info = (await getInfo(url)) as VideoInfo;
+      const summary = (await getSummary(url, numberOfWords)) as Summary;
 
       setSummary(summary);
       setVideoInfo(info);
@@ -49,6 +66,8 @@ export default function InputField() {
             isLoading={isLoading}
             numberOfWords={numberOfWords}
             setNumberOfWords={setNumberOfWords}
+            isVideoUnavailable={isVideoUnavailable}
+            isInputEmpty={isInputEmpty}
           />
         </div>
       </div>

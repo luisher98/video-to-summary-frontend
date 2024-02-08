@@ -4,6 +4,7 @@ import Link from "next/link";
 export default function VideoCard({ videoInfo }: VideoCardProps) {
   if (!videoInfo) return null;
 
+  console.log(videoInfo);
   const {
     id,
     title,
