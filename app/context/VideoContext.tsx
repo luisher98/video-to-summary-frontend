@@ -11,7 +11,7 @@ export function VideoContextProvider({
 }) {
   const [isInputEmpty, setIsInputEmpty] = useState<boolean>(false);
   const [isVideoUnavailable, setIsVideoUnavailable] = useState<boolean>(false);
-  const [summary, setSummary] = useState<Summary>(null);
+  const [summary, setSummary] = useState<Summary>([]);
   const [videoInfo, setVideoInfo] = useState<VideoInfo>(null);
   const [numberOfWords, setNumberOfWords] = useState<number>(100);
 

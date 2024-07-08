@@ -1,7 +1,6 @@
 export default function SummaryContent({ info, summary }: SummaryContentProps) {
   if (!info || !summary) return null;
   const { title } = info;
-  const { content } = summary;
   return (
     <>
       <div className="mx-auto max-w-3xl px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pt-10">
@@ -12,7 +11,7 @@ export default function SummaryContent({ info, summary }: SummaryContentProps) {
                 {title || "No title"}
               </h2>
               <p className="text-lg text-gray-800 dark:text-gray-200">
-                {content || "No summary"}
+                {summary || "No summary"}
               </p>
             </div>
           </div>

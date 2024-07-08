@@ -1,5 +1,6 @@
-type Summary = null | {
-  content: string;
+type Summary = [] | {
+  status: string;
+  message: string;
 };
 
 interface Thumbnail {
@@ -11,14 +12,9 @@ interface Thumbnail {
 type VideoInfo = null | {
   id: string;
   title: string;
-  thumbnail: {
-    default: Thumbnail;
-    medium: Thumbnail;
-    high: Thumbnail;
-    standard: Thumbnail;
-    maxres: Thumbnail;
-  };
+  thumbnail: Thumbnail;
   channel: string;
+  description: string;
 };
 
 type VideoContext = {
@@ -39,6 +35,8 @@ type FormProps = {
   isLoading: boolean;
   numberOfWords: number;
   setNumberOfWords: React.Dispatch<React.SetStateAction<number>>;
+  isVideoUnavailable: boolean;
+  isInputEmpty: boolean;
 };
 
 interface SummaryContentProps {

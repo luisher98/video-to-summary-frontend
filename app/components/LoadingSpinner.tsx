@@ -1,11 +1,8 @@
-
-
-export default function LoadingSpinner() {
-
+export default function LoadingSpinner({ status }) {
   return (
     <>
       <div className="flex h-[20vh] items-center justify-center">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center text-center">
           <div
             className="inline-block h-12 w-12 animate-spin rounded-full border-[3px] border-current border-t-transparent text-blue-600 dark:text-blue-500"
             role="status"
@@ -13,7 +10,7 @@ export default function LoadingSpinner() {
           >
             <span className="sr-only">Loading...</span>
           </div>
-          <p className="text-gray-600 dark:text-gray-300 p-4">Loading...</p>
+          <p className="p-4 text-gray-600 dark:text-gray-300">Loading...<br/>{status}</p>
         </div>
       </div>
     </>

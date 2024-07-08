@@ -1,15 +1,22 @@
-export default async function getSummary(url: string, words: number) {
-  try {
-    const response = await fetch(`/api/video-summary?url=${url}?words=${words}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok)
-      throw new Error(`Network response error, ${response.status}`);
-    const data = await response.json() as Summary;
-    return data;
-  } catch (error) {
-    console.log(error);
+export default async function* getSummary(
+  url: string,
+  words: number
+) {
+  const response = await fetch(`/api/video-summary-sse?url=${url}&words=${words}`);
+
+  if (!response.ok) throw `ERROR - status: ${response.statusText}`;
+  if (!response.body) throw `ERROR - response body is null or undefined!`;
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    try {
+      yield decoder.decode(value);
+    } catch (e: any) {
+      console.warn(e.message);
+    }
   }
 }

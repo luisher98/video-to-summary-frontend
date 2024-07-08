@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import type { FormEvent } from "react";
 import { useVideoContext } from "../context/VideoContext";
 
@@ -12,6 +12,7 @@ import getVideoStatus from "@/lib/getVideoStatus";
 
 export default function InputField() {
   const [url, setUrl] = useState("");
+
   const {
     setSummary,
     setVideoInfo,
@@ -42,14 +43,23 @@ export default function InputField() {
       }
 
       const info = (await getInfo(url)) as VideoInfo;
-      const summary = (await getSummary(url, numberOfWords)) as Summary;
 
-      setSummary(summary);
       setVideoInfo(info);
+
+      for await (const chunk of getSummary(url, numberOfWords)) {
+        try {
+          const jsonString = chunk.match(/\{([^}]+)\}/g)[0];
+          const update = JSON.parse(jsonString.replace(/\\/g, ""));
+          setSummary((prev) => [...prev, update]);
+        } catch (error) {
+          console.warn("Failed to parse JSON:", error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching video data:", error);
     } finally {
-      setIsLoading(false);
       setUrl("");
     }
   };

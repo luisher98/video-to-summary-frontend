@@ -5,27 +5,27 @@ export default function VideoCard({ videoInfo }: VideoCardProps) {
   if (!videoInfo) return null;
 
   console.log(videoInfo);
+
   const {
     id,
     title,
-    thumbnail: {
-      high: { url, width, height },
-    },
+    thumbnail: { url, width, height },
     channel,
+    description,
   } = videoInfo;
 
   return (
     <>
       <Link href={`https://www.youtube.com/watch?v=${id}`} target="_blank">
         <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-          <div className="group flex h-full rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-slate-900 dark:shadow-slate-700/[.7]">
-            <div className="flex aspect-video h-52 flex-col items-center justify-center rounded-xl bg-blue-600">
+          <div className="group flex md:flex-nowrap flex-wrap  h-full rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-slate-900 dark:shadow-slate-700/[.7]">
+            <div className="flex aspect-video object-cover w-full h-full h-52  h-52 flex-col items-center justify-center rounded-xl bg-blue-600">
               <Image
                 src={url}
                 alt={title}
                 width={width}
                 height={height}
-                className="rounded-xl"
+                className="rounded-xl w-full h-full"
               />
             </div>
             <div className="p-4 md:p-6">
@@ -36,8 +36,7 @@ export default function VideoCard({ videoInfo }: VideoCardProps) {
                 by {channel || "unknown"}
               </span>
               <p className="mt-3 text-gray-500">
-                {/* {description || 'No description'} */}
-                No description
+                {description || 'No description'}
               </p>
             </div>
           </div>
