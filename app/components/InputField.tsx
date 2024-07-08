@@ -48,8 +48,8 @@ export default function InputField() {
 
       for await (const chunk of getSummary(url, numberOfWords)) {
         try {
-          const jsonString = chunk.match(/\{([^}]+)\}/g)[0];
-          const update = JSON.parse(jsonString.replace(/\\/g, ""));
+          const jsonString: string = chunk.match(/\{([^}]+)\}/g)[0];
+          const update: SummaryProcessingUpdate = JSON.parse(jsonString.replace(/\\/g, ""));
           setSummary((prev) => [...prev, update]);
         } catch (error) {
           console.warn("Failed to parse JSON:", error.message);

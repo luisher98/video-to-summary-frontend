@@ -47,3 +47,8 @@ interface SummaryContentProps {
 interface VideoCardProps {
   videoInfo: VideoInfo | null;
 }
+
+interface SummaryProcessingUpdate {
+  status: string;
+  message: string;
+}
