@@ -14,7 +14,6 @@ export function VideoContextProvider({
   const [summary, setSummary] = useState<Summary>([]);
   const [videoInfo, setVideoInfo] = useState<VideoInfo>(null);
   const [numberOfWords, setNumberOfWords] = useState<number>(100);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (

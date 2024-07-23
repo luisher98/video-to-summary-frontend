@@ -14,16 +14,16 @@ export default function InputField() {
   const [url, setUrl] = useState("");
 
   const {
-    setSummary,
-    setVideoInfo,
-    setIsLoading,
-    isLoading,
-    numberOfWords,
-    setNumberOfWords,
-    setIsVideoUnavailable,
-    isVideoUnavailable,
     isInputEmpty,
     setIsInputEmpty,
+    setIsVideoUnavailable,
+    isVideoUnavailable,
+    setSummary,
+    setVideoInfo,
+    isLoading,
+    setIsLoading,
+    numberOfWords,
+    setNumberOfWords,
   } = useVideoContext();
 
   const handleSubmit = async (e: FormEvent) => {
@@ -48,11 +48,15 @@ export default function InputField() {
 
       for await (const chunk of getSummary(url, numberOfWords)) {
         try {
-          const jsonString: string = chunk.match(/\{([^}]+)\}/g)[0];
-          const update: SummaryProcessingUpdate = JSON.parse(jsonString.replace(/\\/g, ""));
-          setSummary((prev) => [...prev, update]);
+          const jsonString = chunk.match(/\{([^}]+)\}/g)?.[0];
+          if (jsonString) {
+            const update: SummaryProcessingUpdate = JSON.parse(jsonString.replace(/\\/g, "")) as SummaryProcessingUpdate;
+            setSummary((prev) => [...prev, update]);
+          } else {
+            console.error("No valid JSON found in chunk");
+          }
         } catch (error) {
-          console.warn("Failed to parse JSON:", error.message);
+          console.error("Failed to parse JSON from route: ", (error as Error).message);
         } finally {
           setIsLoading(false);
         }
@@ -70,14 +74,14 @@ export default function InputField() {
         <div className="text-center">
           <Heading />
           <Form
-            url={url}
-            setUrl={setUrl}
-            handleSubmit={handleSubmit}
+            isInputEmpty={isInputEmpty}
+            isVideoUnavailable={isVideoUnavailable}
             isLoading={isLoading}
             numberOfWords={numberOfWords}
             setNumberOfWords={setNumberOfWords}
-            isVideoUnavailable={isVideoUnavailable}
-            isInputEmpty={isInputEmpty}
+            url={url}
+            setUrl={setUrl}
+            handleSubmit={handleSubmit}
           />
         </div>
       </div>

@@ -1,6 +1,6 @@
 class StreamingResponse extends Response {
-  constructor(res: ReadableStream<any>, init?: ResponseInit) {
-    super(res as any, {
+  constructor(res: ReadableStream<Uint8Array>, init?: ResponseInit) {
+    super(res, {
       ...init,
       status: 200,
       headers: {
@@ -15,12 +15,12 @@ const stringToUint8Array = (str: string) => {
   return encoder.encode(str);
 };
 
-export const streamingJsonResponse = <T extends Record<string, unknown>>(
+export const streamingJsonResponse = <T extends string/*Record<string, unknown>*/>(
   generator: AsyncGenerator<T, void, unknown>,
 ): Response => {
-  const stream = new ReadableStream<any>({
+  const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      for await (let chunk of generator) {
+      for await (const chunk of generator) {
         const chunkData = stringToUint8Array(JSON.stringify(chunk));
         controller.enqueue(chunkData);
       }

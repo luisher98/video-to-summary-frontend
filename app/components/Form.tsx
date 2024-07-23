@@ -1,12 +1,12 @@
 export default function Form({
-  url,
-  setUrl,
-  handleSubmit,
+  isInputEmpty,
+  isVideoUnavailable,
   isLoading,
   numberOfWords,
   setNumberOfWords,
-  isVideoUnavailable,
-  isInputEmpty
+  url,
+  setUrl,
+  handleSubmit,
 }: FormProps) {
   return (
     <>
@@ -59,13 +59,13 @@ export default function Form({
             </div>
           </div>
           {isVideoUnavailable && (
-            <p class="mt-2 text-left text-xs text-red-600 dark:text-red-600">
-              <span class="font-medium">Something went wrong!</span> Check if
+            <p className="mt-2 text-left text-xs text-red-600 dark:text-red-600">
+              <span className="font-medium">Something went wrong!</span> Check if
               the video exists or if the format is correct.
             </p>
           )}
           {isInputEmpty && (
-            <p class="mt-2 text-left text-xs text-red-600 dark:text-red-600">
+            <p className="mt-2 text-left text-xs text-red-600 dark:text-red-600">
               Cant be empty!
             </p>
           )}

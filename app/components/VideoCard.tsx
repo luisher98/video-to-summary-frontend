@@ -18,8 +18,8 @@ export default function VideoCard({ videoInfo }: VideoCardProps) {
     <>
       <Link href={`https://www.youtube.com/watch?v=${id}`} target="_blank">
         <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-          <div className="group flex md:flex-nowrap flex-wrap  h-full rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-slate-900 dark:shadow-slate-700/[.7]">
-            <div className="flex aspect-video object-cover w-full h-full h-52  h-52 flex-col items-center justify-center rounded-xl bg-blue-600">
+          <div className="group flex md:flex-nowrap flex-wrap items-center  h-full rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-slate-900 dark:shadow-slate-700/[.7]">
+            <div className="flex aspect-video object-cover w-full h-full flex-col items-center justify-center rounded-xl bg-blue-600">
               <Image
                 src={url}
                 alt={title}

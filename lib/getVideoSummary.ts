@@ -15,8 +15,8 @@ export default async function* getSummary(
     if (done) break;
     try {
       yield decoder.decode(value);
-    } catch (e: any) {
-      console.warn(e.message);
+    } catch (error) {
+      console.error((error as Error).message);
     }
   }
 }

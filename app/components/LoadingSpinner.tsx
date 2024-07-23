@@ -1,4 +1,4 @@
-export default function LoadingSpinner({ status }) {
+export default function LoadingSpinner({ message }: { message: string }) {
   return (
     <>
       <div className="flex h-[20vh] items-center justify-center">
@@ -10,7 +10,11 @@ export default function LoadingSpinner({ status }) {
           >
             <span className="sr-only">Loading...</span>
           </div>
-          <p className="p-4 text-gray-600 dark:text-gray-300">Loading...<br/>{status}</p>
+          <p className="p-4 text-gray-600 dark:text-gray-300">
+            Loading...
+            <br />
+            {message}
+          </p>
         </div>
       </div>
     </>

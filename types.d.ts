@@ -1,13 +1,10 @@
-type Summary = [] | {
-  status: string;
-  message: string;
-};
+type Summary = SummaryProcessingUpdate[];
 
 interface Thumbnail {
   url: string;
   width: number;
   height: number;
-};
+}
 
 type VideoInfo = null | {
   id: string;
@@ -18,6 +15,10 @@ type VideoInfo = null | {
 };
 
 type VideoContext = {
+  isInputEmpty: boolean;
+  setIsInputEmpty: React.Dispatch<React.SetStateAction<boolean>>;
+  isVideoUnavailable: boolean;
+  setIsVideoUnavailable: React.Dispatch<React.SetStateAction<boolean>>;
   summary: Summary;
   setSummary: React.Dispatch<React.SetStateAction<Summary>>;
   videoInfo: VideoInfo;
@@ -41,7 +42,7 @@ type FormProps = {
 
 interface SummaryContentProps {
   info: VideoInfo | null;
-  summary: Summary | null;
+  summary: SummaryProcessingUpdate | null;
 }
 
 interface VideoCardProps {
@@ -49,6 +50,6 @@ interface VideoCardProps {
 }
 
 interface SummaryProcessingUpdate {
-  status: string;
+  status: "done" | "pending" | "error";
   message: string;
 }
