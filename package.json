@@ -4,27 +4,29 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "lint": "next lint",
     "start": "next start"
   },
   "dependencies": {
-    "next": "^14.0.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "next": "15.1.6",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "rxjs": "^7.8.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
     "@types/eslint": "^8.44.2",
     "@types/node": "^18.16.0",
-    "@types/react": "^18.2.20",
-    "@types/react-dom": "^18.2.7",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.47.0",
-    "eslint-config-next": "^14.0.2",
+    "eslint-config-next": "15.1.6",
     "postcss": "^8.4.27",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.5.1",
@@ -35,5 +37,9 @@
   "ct3aMetadata": {
     "initVersion": "7.22.0"
   },
-  "packageManager": "npm@8.19.2"
+  "packageManager": "npm@8.19.2",
+  "overrides": {
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3"
+  }
 }

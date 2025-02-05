@@ -1,3 +1,7 @@
+'use client';
+
+import type { FormProps } from '@/types/components';
+
 export default function Form({
   isInputEmpty,
   isVideoUnavailable,
@@ -33,7 +37,7 @@ export default function Form({
                 name="hs-search-article-1"
                 id="hs-search-article-1"
                 className="block w-full rounded-md border-transparent p-3 dark:bg-gray-800 dark:text-gray-400"
-                placeholder=""
+                placeholder="Enter YouTube URL"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 disabled={isLoading}
@@ -66,7 +70,7 @@ export default function Form({
           )}
           {isInputEmpty && (
             <p className="mt-2 text-left text-xs text-red-600 dark:text-red-600">
-              Cant be empty!
+              Can&apos;t be empty!
             </p>
           )}
           <label

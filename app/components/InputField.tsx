@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useVideoContext } from "../context/VideoContext";
-
+import type { VideoContextState, SummaryProcessingUpdate } from "../../types";
 import Heading from "./Heading";
 import getSummary from "../../lib/getVideoSummary";
 import getInfo from "@/lib/getVideoInfo";
@@ -24,46 +24,58 @@ export default function InputField() {
     setIsLoading,
     numberOfWords,
     setNumberOfWords,
-  } = useVideoContext();
+  } = useVideoContext() as VideoContextState;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // Reset states
     setIsLoading(true);
+    setSummary([]);
+    setVideoInfo(null);
+    setIsInputEmpty(false);
+    setIsVideoUnavailable(false);
+
     if (!url) {
       setIsInputEmpty(true);
       setIsLoading(false);
       return;
     }
+
     try {
+      // Check video status
       const status = await getVideoStatus(url);
+      
       if (!status) {
         setIsVideoUnavailable(true);
         setIsLoading(false);
         return;
       }
 
-      const info = (await getInfo(url)) as VideoInfo;
-
+      // Get video info
+      const info = await getInfo(url);
+      
+      if (!info) {
+        setIsVideoUnavailable(true);
+        setIsLoading(false);
+        return;
+      }
+      
       setVideoInfo(info);
 
-      for await (const chunk of getSummary(url, numberOfWords)) {
-        try {
-          const jsonString = chunk.match(/\{([^}]+)\}/g)?.[0];
-          if (jsonString) {
-            const update: SummaryProcessingUpdate = JSON.parse(jsonString.replace(/\\/g, "")) as SummaryProcessingUpdate;
-            setSummary((prev) => [...prev, update]);
-          } else {
-            console.error("No valid JSON found in chunk");
-          }
-        } catch (error) {
-          console.error("Failed to parse JSON from route: ", (error as Error).message);
-        } finally {
-          setIsLoading(false);
+      // Get summary
+      for await (const update of getSummary(url, numberOfWords)) {
+        setSummary((prev: SummaryProcessingUpdate[]) => [...prev, update]);
+        
+        if (update.status === 'error') {
+          setIsVideoUnavailable(true);
+          break;
         }
       }
     } catch (error) {
-      console.error("Error fetching video data:", error);
+      setIsVideoUnavailable(true);
     } finally {
+      setIsLoading(false);
       setUrl("");
     }
   };

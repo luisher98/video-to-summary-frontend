@@ -1,8 +1,21 @@
 import { streamingJsonResponse } from "@/app/server/streaming";
 import { delay } from "@/app/utils/utils";
 
+/**
+ * Configuration for the API route
+ * @see https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+ */
 export const dynamic = "force-dynamic";
 
+/**
+ * Helper function that fetches and streams summary updates from the backend API
+ * 
+ * @param url - The YouTube video URL to summarize
+ * @param words - The target number of words for the summary
+ * @param throttleMs - Delay between updates in milliseconds to control streaming rate
+ * @yields String chunks of the summary as they become available
+ * @throws {Error} If the reader cannot be obtained from response body
+ */
 async function* fetchSummaryUpdates(
   url: string,
   words: number,
@@ -29,6 +42,29 @@ async function* fetchSummaryUpdates(
   }
 }
 
+/**
+ * GET /api/video-summary-sse
+ * 
+ * Streams a video summary from the backend API using Server-Sent Events (SSE).
+ * The summary is throttled to ensure smooth delivery to the client.
+ * 
+ * @param request - The incoming request object containing:
+ *   - url: YouTube video URL
+ *   - words: Target word count for the summary
+ * 
+ * @returns 
+ * - 200: SSE stream with throttled summary updates
+ * - 400: Bad request (missing URL or words parameter)
+ * 
+ * @example
+ * // Request
+ * GET /api/video-summary-sse?url=https://www.youtube.com/watch?v=VIDEO_ID&words=200
+ * 
+ * // Response Stream
+ * data: "First chunk of summary..."
+ * data: "Second chunk of summary..."
+ * data: "Final chunk of summary..."
+ */
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get("url");

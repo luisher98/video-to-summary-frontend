@@ -1,22 +1,22 @@
-export default async function getVideoStatus(url: string) {
+import { getApiUrl } from './env';
+import type { VideoInfo } from '@/types';
+
+export default async function getVideoStatus(url: string): Promise<boolean> {
   try {
-    const response = await fetch(`/api/video-status?url=${url}`, {
+    const API_URL = getApiUrl();
+    const response = await fetch(`${API_URL}/api/info?url=${url}`, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (!response.ok)
-      throw new Error(`Network response error, ${response.status}`);
-    const data = (await response.json()) as { status: number };
 
-    if (data.status === 404) {
+    if (!response.ok) {
       return false;
     }
 
-    if (data.status === 200) {
-      return true;
-    }
+    const data = await response.json() as VideoInfo;
+    return Boolean(data?.id);
   } catch (error) {
-    console.log(error);
+    return false;
   }
 }

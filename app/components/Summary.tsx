@@ -9,17 +9,20 @@ export default function Summary() {
   const { summary, videoInfo, isLoading } = useVideoContext();
 
   const lastSummaryItem = summary[summary.length - 1];
-  const loadingMessage = lastSummaryItem ? lastSummaryItem.message : "Sending information.";
-  return (
-    <>
-      {lastSummaryItem && lastSummaryItem.status === "done" && videoInfo ? (
-        <>
-          <VideoCard videoInfo={videoInfo} />
-          <SummaryContent info={videoInfo} summary={lastSummaryItem} />
-        </>
-      ) : isLoading || (lastSummaryItem && lastSummaryItem.status === "pending") ? (
-        <LoadingSpinner message={loadingMessage} />
-      ) : null}
-    </>
-  );
+  const loadingMessage = lastSummaryItem?.message ?? "Sending information...";
+
+  if (lastSummaryItem?.status === "done" && videoInfo) {
+    return (
+      <>
+        <VideoCard videoInfo={videoInfo} />
+        <SummaryContent info={videoInfo} summary={lastSummaryItem} />
+      </>
+    );
+  }
+
+  if (isLoading || lastSummaryItem?.status === "pending") {
+    return <LoadingSpinner message={loadingMessage} />;
+  }
+
+  return null;
 }

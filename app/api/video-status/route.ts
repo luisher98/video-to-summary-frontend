@@ -1,42 +1,40 @@
 import { NextResponse } from "next/server";
+import type { YouTubeApiResponse } from "@/types/video";
 
+/**
+ * Configuration for the API route
+ * @see https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+ */
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export type VideoInfo = {
-  id: string;
-  title: string;
-  trimmedDescription: string;
-  mediumThumbnail: {
-    url: string;
-    width: number;
-    height: number;
-  };
-  channelTitle: string;
-};
-
-export type YouTubeApiResponse = {
-  items: YouTubeVideo[];
-};
-
-type Thumbnail = {
-  url: string;
-  width: number;
-  height: number;
-};
-
-type Snippet = {
-  title: string;
-  description: string;
-  thumbnails: {
-    medium: Thumbnail;
-  };
-  channelTitle: string;
-};
-
-type YouTubeVideo = {
-  snippet: Snippet;
-};
-
-
+/**
+ * GET /api/video-status
+ * 
+ * Checks if a YouTube video exists and is accessible.
+ * Makes a request to the YouTube API to verify video availability.
+ * 
+ * @param req - The incoming request object containing the YouTube URL in query parameters
+ * @returns 
+ * - 200: Video exists and is accessible
+ * - 404: Video not found or not accessible
+ * - 500: Internal server error (API issues, missing env vars)
+ * 
+ * @example
+ * // Request
+ * GET /api/video-status?url=https://www.youtube.com/watch?v=VIDEO_ID
+ * 
+ * // Success Response
+ * {
+ *   "status": 200
+ * }
+ * 
+ * // Error Response
+ * {
+ *   "status": 404
+ * }
+ */
 export async function GET(req: Request): Promise<Response> {
   try {
     const { searchParams } = new URL(req.url);
