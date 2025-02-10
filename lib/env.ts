@@ -23,16 +23,10 @@ export function validateEnv() {
 }
 
 /**
- * Get the API URL based on the environment
+ * Get the API URL based on environment
  */
 export function getApiUrl(): string {
-  // In development, use the local API
-  if (process.env.NODE_ENV === 'development') {
-    return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5050';
-  }
-  
-  // In production, use the deployed API URL
-  return process.env.NEXT_PUBLIC_API_URL ?? '';
+  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5050';
 }
 
 /**
@@ -42,7 +36,6 @@ export function getAzureConfig() {
   return {
     accountName: process.env.NEXT_PUBLIC_AZURE_STORAGE_ACCOUNT_NAME ?? '',
     containerName: process.env.NEXT_PUBLIC_AZURE_STORAGE_CONTAINER_NAME ?? '',
-    sasToken: process.env.NEXT_PUBLIC_AZURE_STORAGE_SAS_TOKEN ?? '',
   };
 }
 
@@ -50,6 +43,5 @@ export function getAzureConfig() {
  * Get the maximum file size in bytes
  */
 export function getMaxFileSize(): number {
-  const maxMB = parseInt(process.env.NEXT_PUBLIC_MAX_FILE_SIZE ?? '500', 10);
-  return maxMB * 1024 * 1024; // Convert MB to bytes
+  return Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE) || 500 * 1024 * 1024; // 500MB default
 } 
