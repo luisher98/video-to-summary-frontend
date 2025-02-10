@@ -1,7 +1,34 @@
-import type { NextRequest } from 'next/server';
-import getVideoSummary from '@/lib/getVideoSummary';
-import { createErrorResponse } from '@/lib/api-utils';
+import { streamingJsonResponse } from "@/app/server/streaming";
+import { delay } from "@/app/utils/utils";
 import { youtubeUrlSchema, wordCountSchema } from '@/lib/validations/youtube';
+import { createErrorResponse } from '@/lib/api-utils';
+import type { NextRequest } from 'next/server';
+
+interface ApiResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  data?: {
+    title: string;
+    duration: number;
+    thumbnailUrl: string;
+  };
+}
+
+interface ApiErrorResponse {
+  success: false;
+  message: string;
+  error?: string;
+}
+
+interface VideoInfoResponse {
+  success: true;
+  data: {
+    title: string;
+    duration: number;
+    thumbnailUrl: string;
+  };
+}
 
 /**
  * Configuration for the API route
@@ -13,18 +40,98 @@ export const revalidate = 0;
 export const fetchCache = 'default-no-store';
 
 /**
+ * Helper function that fetches and streams summary updates from the backend API
+ * 
+ * @param url - The YouTube video URL to summarize
+ * @param words - The target number of words for the summary
+ * @param throttleMs - Delay between updates in milliseconds to control streaming rate
+ * @yields String chunks of the summary as they become available
+ * @throws {Error} If the reader cannot be obtained from response body
+ */
+async function* fetchSummaryUpdates(
+  url: string,
+  words: number,
+  throttleMs: number,
+): AsyncGenerator<string, void, unknown> {
+  const API_URL = process.env.API_URL ?? "http://localhost:5050";
+
+  // First, verify the video info
+  try {
+    console.log('Fetching video info from:', `${API_URL}/api/info?url=${encodeURIComponent(url)}`);
+    
+    const infoResponse = await fetch(
+      `${API_URL}/api/info?url=${encodeURIComponent(url)}`,
+      {
+        headers: {
+          'Accept': 'application/json',
+        }
+      }
+    );
+
+    const infoData = await infoResponse.json() as ApiResponse;
+    console.log('Video info response:', infoData);
+
+    if (!infoResponse.ok || !infoData.success) {
+      const errorMessage = infoData.message ?? infoData.error ?? 'Failed to fetch video info';
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+    console.error('Video info error:', error);
+    throw new Error(`Failed to fetch video info: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+
+  // Then proceed with the summary generation
+  try {
+    console.log('Fetching summary from:', `${API_URL}/api/youtube-summary-sse?url=${encodeURIComponent(url)}&words=${words}`);
+    
+    const response = await fetch(
+      `${API_URL}/api/youtube-summary-sse?url=${encodeURIComponent(url)}&words=${words}`,
+      {
+        headers: {
+          'Accept': 'text/event-stream',
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json() as ApiResponse;
+      const errorMessage = errorData.message ?? errorData.error ?? `API request failed: ${response.statusText}`;
+      throw new Error(errorMessage);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("Failed to get reader from response body");
+    }
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value) {
+        const decodedValue = new TextDecoder().decode(value);
+        yield decodedValue;
+        await delay(throttleMs); // Throttle the updates
+      }
+    }
+  } catch (error) {
+    console.error('Summary generation error:', error);
+    throw error;
+  }
+}
+
+/**
  * GET /api/youtube-summary-sse
  * 
- * Generates and streams a summary of a YouTube video using Server-Sent Events (SSE).
- * The summary is generated in chunks and streamed back to the client in real-time.
+ * Streams a YouTube video summary from the backend API using Server-Sent Events (SSE).
+ * The summary is throttled to ensure smooth delivery to the client.
  * 
  * @param request - The incoming request object containing:
  *   - url: YouTube video URL
- *   - wordCount: Desired length of the summary in words
+ *   - wordCount: Target word count for the summary
  * 
  * @returns 
- * - 200: SSE stream with summary updates
- * - 400: Bad request (missing parameters, invalid URL, invalid word count)
+ * - 200: SSE stream with throttled summary updates
+ * - 400: Bad request (invalid URL or word count)
  * - 500: Internal server error
  * 
  * @example
@@ -73,6 +180,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Validate YouTube URL
     const urlResult = youtubeUrlSchema.safeParse(url);
     if (!urlResult.success) {
       return createErrorResponse({
@@ -81,6 +189,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // Validate word count
     const wordResult = wordCountSchema.safeParse(parseInt(wordCount, 10));
     if (!wordResult.success) {
       return createErrorResponse({
@@ -89,40 +198,14 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const accept = request.headers.get('accept');
-    if (accept !== 'text/event-stream') {
-      return new Response('SSE not supported', { status: 400 });
-    }
-
-    const responseHeaders = new Headers();
-    responseHeaders.set('Content-Type', 'text/event-stream');
-    responseHeaders.set('Connection', 'keep-alive');
-    responseHeaders.set('Cache-Control', 'no-cache, no-transform');
-
-    const stream = getVideoSummary(urlResult.data, wordResult.data);
-    const encoder = new TextEncoder();
-
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const update of stream) {
-            const message = `data: ${JSON.stringify(update)}\n\n`;
-            controller.enqueue(encoder.encode(message));
-          }
-          controller.close();
-        } catch (error) {
-          controller.error(error);
-        }
-      },
-    });
-
-    return new Response(readable, {
-      headers: responseHeaders,
-    });
+    // Return streaming response
+    return streamingJsonResponse(
+      fetchSummaryUpdates(urlResult.data, wordResult.data, 500)
+    );
   } catch (error) {
     console.error('Error in /api/youtube-summary-sse:', error);
     return createErrorResponse({
-      message: 'Internal server error',
+      message: error instanceof Error ? error.message : 'Internal server error',
       status: 500
     });
   }

@@ -7,9 +7,10 @@ export interface VideoThumbnail {
 export interface VideoInfo {
   id: string;
   title: string;
-  thumbnail: VideoThumbnail;
-  channel: string;
   description: string;
+  thumbnailUrl: string;
+  channel: string;
+  duration: number;
 }
 
 export interface VideoStatus {
@@ -33,8 +34,13 @@ export interface YouTubeSnippet {
   channelTitle: string;
 }
 
+export interface YouTubeContentDetails {
+  duration: string;  // ISO 8601 duration format (e.g., PT1H2M10S)
+}
+
 export interface YouTubeVideo {
   snippet: YouTubeSnippet;
+  contentDetails: YouTubeContentDetails;
 }
 
 export interface YouTubeApiResponse {

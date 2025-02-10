@@ -1,12 +1,18 @@
 import { getApiUrl } from './env';
-import type { VideoInfo } from '@/types';
+
+interface ApiResponse {
+  success: boolean;
+  data?: {
+    id: string;
+  };
+}
 
 export default async function getVideoStatus(url: string): Promise<boolean> {
   try {
     const API_URL = getApiUrl();
-    const response = await fetch(`${API_URL}/api/info?url=${url}`, {
+    const response = await fetch(`${API_URL}/api/info?url=${encodeURIComponent(url)}`, {
       headers: {
-        "Content-Type": "application/json",
+        "Accept": "application/json",
       },
     });
 
@@ -14,9 +20,10 @@ export default async function getVideoStatus(url: string): Promise<boolean> {
       return false;
     }
 
-    const data = await response.json() as VideoInfo;
-    return Boolean(data?.id);
+    const { success, data } = await response.json() as ApiResponse;
+    return success && Boolean(data?.id);
   } catch (error) {
+    console.error('Error checking video status:', error);
     return false;
   }
 }

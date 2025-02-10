@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import type { VideoInfo, SummaryProcessingUpdate } from '@/types';
 
 interface VideoContextState {
@@ -16,6 +16,9 @@ interface VideoContextState {
   setIsLoading: (value: boolean) => void;
   numberOfWords: number;
   setNumberOfWords: (value: number) => void;
+  url: string;
+  setUrl: (value: string) => void;
+  resetStates: () => void;
 }
 
 const VideoContext = createContext<VideoContextState | null>(null);
@@ -31,6 +34,16 @@ export function VideoContextProvider({
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
   const [numberOfWords, setNumberOfWords] = useState<number>(100);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [url, setUrl] = useState<string>('');
+
+  const resetStates = useCallback(() => {
+    setIsInputEmpty(false);
+    setIsVideoUnavailable(false);
+    setSummary([]);
+    setVideoInfo(null);
+    setIsLoading(false);
+    setUrl('');
+  }, []);
 
   return (
     <VideoContext.Provider
@@ -47,6 +60,9 @@ export function VideoContextProvider({
         setIsLoading,
         numberOfWords,
         setNumberOfWords,
+        url,
+        setUrl,
+        resetStates,
       }}
     >
       {children}

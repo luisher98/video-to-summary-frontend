@@ -1,58 +1,41 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
-type AnyFunction = (...args: unknown[]) => unknown;
-
-/**
- * Combines class names with Tailwind CSS classes
- */
-export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs));
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
 
-/**
- * Creates a debounced function that delays invoking func until after wait milliseconds
- */
-export function debounce<T extends AnyFunction>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
+interface ValidationError {
+  message: string;
+}
 
-  return function executedFunction(...args: Parameters<T>) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
+export function validateVideoFile(file: File): ValidationError | null {
+  const maxSize = 500 * 1024 * 1024; // 500MB
+  const allowedTypes = ['video/mp4', 'video/webm', 'video/quicktime'];
+
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      message: 'Invalid file type. Please upload an MP4, WebM, or QuickTime video.'
     };
+  }
 
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
+  if (file.size > maxSize) {
+    return {
+      message: `File is too large. Maximum size is ${formatBytes(maxSize)}.`
+    };
+  }
+
+  return null;
 }
 
-/**
- * Creates a throttled function that only invokes func at most once per every wait milliseconds
- */
-export function throttle<T extends AnyFunction>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let inThrottle = false;
+export function formatBytes(bytes: number, decimals = 2): string {
+  if (bytes === 0) return '0 Bytes';
 
-  return function executedFunction(...args: Parameters<T>): void {
-    if (!inThrottle) {
-      inThrottle = true;
-      func(...args);
-      setTimeout(() => (inThrottle = false), wait);
-    }
-  };
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
-
-/**
- * Safe JSON parse with type validation
- * @deprecated Use JSON.parse directly with try/catch in the calling code for better type safety
- */
-export function safeJSONParse<T>(value: string, fallback: T): T {
-  console.warn('safeJSONParse is deprecated. Use JSON.parse directly with try/catch for better type safety');
-  return fallback;
-} 

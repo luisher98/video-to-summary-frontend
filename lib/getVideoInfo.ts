@@ -1,12 +1,27 @@
 import { getApiUrl } from './env';
 import type { VideoInfo } from '@/types';
 
+interface ApiResponse {
+  success: boolean;
+  data?: {
+    id: string;
+    title: string;
+    thumbnail: {
+      url: string;
+      width: number;
+      height: number;
+    };
+    channel: string;
+    description: string;
+  };
+}
+
 export default async function getInfo(url: string): Promise<VideoInfo | null> {
   try {
     const API_URL = getApiUrl();
-    const response = await fetch(`${API_URL}/api/info?url=${url}`, {
+    const response = await fetch(`${API_URL}/api/info?url=${encodeURIComponent(url)}`, {
       headers: {
-        "Content-Type": "application/json",
+        "Accept": "application/json",
       },
     });
 
@@ -14,12 +29,11 @@ export default async function getInfo(url: string): Promise<VideoInfo | null> {
       return null;
     }
     
-    const data = await response.json() as Partial<VideoInfo>;
-
-    if (!data?.id || !data.title || !data.thumbnail || !data.channel || !data.description) {
+    const { success, data } = await response.json() as ApiResponse;
+    if (!success || !data) {
       return null;
     }
-    
+
     return {
       id: data.id,
       title: data.title,
@@ -28,6 +42,7 @@ export default async function getInfo(url: string): Promise<VideoInfo | null> {
       description: data.description
     };
   } catch (error) {
+    console.error('Error fetching video info:', error);
     return null;
   }
 }

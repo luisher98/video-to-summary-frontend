@@ -13,9 +13,10 @@ declare module 'youtube-summary' {
   interface VideoInfo {
     id: string;
     title: string;
-    thumbnail: VideoThumbnail;
-    channel: string;
     description: string;
+    thumbnailUrl: string;
+    channel: string;
+    duration: number;
   }
 
   type SummaryStatus = 'processing' | 'pending' | 'done' | 'error';

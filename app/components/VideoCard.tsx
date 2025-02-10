@@ -10,10 +10,15 @@ export default function VideoCard({ videoInfo }: VideoCardProps) {
   const {
     id,
     title,
-    thumbnail: { url, width, height },
+    thumbnailUrl,
     channel,
     description,
+    duration,
   } = videoInfo;
+
+  // YouTube thumbnails are typically 16:9 ratio
+  const width = 1280;
+  const height = 720;
 
   return (
     <Link href={`https://www.youtube.com/watch?v=${id}`} target="_blank">
@@ -21,7 +26,7 @@ export default function VideoCard({ videoInfo }: VideoCardProps) {
         <div className="group flex md:flex-nowrap flex-wrap items-center h-full rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-slate-900 dark:shadow-slate-700/[.7]">
           <div className="flex aspect-video object-cover w-full h-full flex-col items-center justify-center rounded-xl bg-blue-600">
             <Image
-              src={url}
+              src={thumbnailUrl}
               alt={title}
               width={width}
               height={height}
@@ -38,9 +43,23 @@ export default function VideoCard({ videoInfo }: VideoCardProps) {
             <p className="mt-3 text-gray-500">
               {description || "No description"}
             </p>
+            <span className="mt-2 block text-sm text-gray-500">
+              Duration: {formatDuration(duration)}
+            </span>
           </div>
         </div>
       </div>
     </Link>
   );
+}
+
+function formatDuration(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
