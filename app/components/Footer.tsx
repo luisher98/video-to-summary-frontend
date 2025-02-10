@@ -2,30 +2,35 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <>
-      <footer className="sticky-footer flex  place-content-between items-center text-center text-white ">
-        <div className="w-full  p-4 text-center text-gray-700  dark:text-gray-400">
-          By Luis Hernández Martín
-        </div>
-        <div className="container pt-9">
-          <div className="mb-9 flex justify-center">
+    <footer className="mt-auto w-full bg-white dark:bg-gray-800">
+      <div className="mx-auto max-w-3xl px-4 py-6">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="text-center text-gray-700 dark:text-gray-400">
+            By Luis Hernández Martín
+          </div>
+          <div className="flex items-center space-x-4">
             <Link
               href="https://www.linkedin.com/in/luis-hern%C3%A1ndez-mart%C3%ADn/"
-              className="mr-9 text-gray-800 dark:text-gray-200" target="_blank"
+              className="text-gray-800 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400"
+              target="_blank"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
+                className="h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
               </svg>
             </Link>
-            <Link href="https://github.com/luisher98" className="text-gray-800 dark:text-gray-200" target="_blank">
+            <Link 
+              href="https://github.com/luisher98" 
+              className="text-gray-800 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400" 
+              target="_blank"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
+                className="h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -34,7 +39,7 @@ export default function Footer() {
             </Link>
           </div>
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
 }

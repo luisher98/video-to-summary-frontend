@@ -14,13 +14,17 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <>
-      <DarkModeSwitch />
-      <VideoContextProvider>
-        <InputSelector />
-        <Summary />
-      </VideoContextProvider>
+    <div className="flex min-h-screen flex-col">
+      <div className="flex-none">
+        <DarkModeSwitch />
+      </div>
+      <main className="flex-grow">
+        <VideoContextProvider>
+          <InputSelector />
+          <Summary />
+        </VideoContextProvider>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }

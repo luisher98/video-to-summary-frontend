@@ -16,9 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable} dark:bg-gray-800 flex flex-col place-content-between min-h-screen`}>
-
-        {children}</body>
+      <body className={`font-sans ${inter.variable} dark:bg-gray-800`}>
+        {children}
+      </body>
     </html>
   );
 }
