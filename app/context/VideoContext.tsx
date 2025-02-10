@@ -3,6 +3,13 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import type { VideoInfo, SummaryProcessingUpdate } from '@/types';
 
+interface FileInfo {
+  name: string;
+  size: number;
+  duration?: number;
+  type: string;
+}
+
 interface VideoContextState {
   isInputEmpty: boolean;
   setIsInputEmpty: (value: boolean) => void;
@@ -12,6 +19,8 @@ interface VideoContextState {
   setSummary: (value: SummaryProcessingUpdate[] | ((prev: SummaryProcessingUpdate[]) => SummaryProcessingUpdate[])) => void;
   videoInfo: VideoInfo | null;
   setVideoInfo: (value: VideoInfo | null) => void;
+  fileInfo: FileInfo | null;
+  setFileInfo: (value: FileInfo | null) => void;
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
   numberOfWords: number;
@@ -32,6 +41,7 @@ export function VideoContextProvider({
   const [isVideoUnavailable, setIsVideoUnavailable] = useState<boolean>(false);
   const [summary, setSummary] = useState<SummaryProcessingUpdate[]>([]);
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [numberOfWords, setNumberOfWords] = useState<number>(100);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [url, setUrl] = useState<string>('');
@@ -41,6 +51,7 @@ export function VideoContextProvider({
     setIsVideoUnavailable(false);
     setSummary([]);
     setVideoInfo(null);
+    setFileInfo(null);
     setIsLoading(false);
     setUrl('');
   }, []);
@@ -56,6 +67,8 @@ export function VideoContextProvider({
         setSummary,
         videoInfo,
         setVideoInfo,
+        fileInfo,
+        setFileInfo,
         isLoading,
         setIsLoading,
         numberOfWords,

@@ -11,10 +11,10 @@ export default function Summary() {
   const lastSummaryItem = summary[summary.length - 1];
   const loadingMessage = lastSummaryItem?.message ?? "Sending information...";
 
-  if (lastSummaryItem?.status === "done" && videoInfo) {
+  if (lastSummaryItem?.status === "done") {
     return (
       <div className="space-y-8">
-        <VideoCard videoInfo={videoInfo} />
+        {videoInfo && <VideoCard videoInfo={videoInfo} />}
         <SummaryContent info={videoInfo} summary={lastSummaryItem} />
         <div className="flex justify-center pb-8">
           <button
@@ -28,7 +28,12 @@ export default function Summary() {
     );
   }
 
-  if (isLoading || lastSummaryItem?.status === "pending") {
+  const isProcessing = isLoading || (
+    lastSummaryItem?.status && 
+    ["pending", "processing", "uploading"].includes(lastSummaryItem.status)
+  );
+
+  if (isProcessing) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <LoadingSpinner message={loadingMessage} />

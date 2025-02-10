@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { cn, validateVideoFile } from '@/lib/utils';
 import { Progress } from './ui/progress';
 import type { SummaryProcessingUpdate, SummaryResponse } from '@/types';
+import { useVideoContext } from '@/app/context/VideoContext';
 
 interface FileUploadFormProps {
   isLoading: boolean;
@@ -41,6 +42,7 @@ export default function FileUploadForm({
   setNumberOfWords,
   setSummary,
 }: FileUploadFormProps) {
+  const { setFileInfo } = useVideoContext();
   const [dragActive, setDragActive] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -169,12 +171,21 @@ export default function FileUploadForm({
         const fileWithType = new File([file], file.name, { type: fileType });
         formData.append('video', fileWithType);
 
+        // Set file information
+        setFileInfo({
+          name: file.name,
+          size: file.size,
+          type: fileType
+        });
+
+        console.log('Starting file upload with words:', numberOfWords);
         const response = await fetch(`/api/upload-summary-sse?words=${numberOfWords}`, {
           method: 'POST',
           body: formData,
         });
 
         if (!response.ok) {
+          console.error('Upload failed with status:', response.status);
           throw new Error('Upload failed');
         }
 
@@ -183,26 +194,51 @@ export default function FileUploadForm({
           throw new Error('Failed to get reader from response');
         }
 
+        console.log('Starting to read SSE stream');
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {
+            console.log('SSE stream ended');
+            break;
+          }
 
           if (value) {
             const decodedValue = new TextDecoder().decode(value);
+            console.log('Received SSE chunk:', decodedValue);
             const lines = decodedValue.split('\n');
 
             for (const line of lines) {
               if (line.startsWith('data: ')) {
-                const data = JSON.parse(line.slice(5)) as SummaryResponse;
-                void setSummary(prev => [...prev, data]);
+                try {
+                  const data = JSON.parse(line.slice(5)) as SummaryResponse;
+                  console.log('Parsed SSE message:', data);
+                  
+                  // Handle progress updates
+                  if (data.progress) {
+                    console.log('Updating progress:', data.progress);
+                    void setUploadProgress(data.progress);
+                  }
 
-                if (data.status === 'done' || data.status === 'error') {
-                  setIsLoading(false);
-                  return;
-                }
+                  // Add all updates to the summary array
+                  console.log('Adding to summary:', data);
+                  void setSummary(prev => {
+                    console.log('Previous summary:', prev);
+                    return [...prev, data];
+                  });
 
-                if (data.progress) {
-                  void setUploadProgress(data.progress);
+                  // Handle completion or error
+                  if (data.status === 'done') {
+                    console.log('Processing completed with summary:', data.message);
+                    setIsLoading(false);
+                    return;
+                  } else if (data.status === 'error') {
+                    console.error('Processing error:', data.message);
+                    setIsLoading(false);
+                    return;
+                  }
+                } catch (parseError) {
+                  console.error('Error parsing SSE message:', parseError, 'Raw line:', line);
+                  continue;
                 }
               }
             }

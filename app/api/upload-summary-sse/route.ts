@@ -29,17 +29,10 @@ const ALLOWED_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
 
 /**
  * Helper function that streams summary updates from the backend API for uploaded files
- * 
- * @param formData - The form data containing the video file
- * @param words - The target number of words for the summary
- * @param throttleMs - The throttle time in milliseconds between updates
- * @yields String chunks of the summary as they become available
- * @throws {Error} If the reader cannot be obtained from response body
  */
 async function* fetchUploadSummaryUpdates(
   formData: FormData,
   words: number,
-  throttleMs: number,
 ): AsyncGenerator<string, void, unknown> {
   const API_URL = getApiUrl();
   
@@ -60,6 +53,7 @@ async function* fetchUploadSummaryUpdates(
     if (!response.ok) {
       const errorData = await response.json() as ApiErrorResponse;
       const errorMessage = errorData.message ?? errorData.error ?? `API request failed: ${response.statusText}`;
+      console.error('API error response:', errorData);
       throw new Error(errorMessage);
     }
 
@@ -68,18 +62,29 @@ async function* fetchUploadSummaryUpdates(
       throw new Error("Failed to get reader from response body");
     }
 
+    console.log('Starting to read SSE stream');
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        console.log('SSE stream completed');
+        break;
+      }
       
       if (value) {
         const decodedValue = new TextDecoder().decode(value);
+        console.log('Received raw SSE chunk:', decodedValue);
         const lines = decodedValue.split('\n');
         
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            yield line;
-            await delay(throttleMs); // Throttle updates
+            try {
+              const eventData = line.slice(5);
+              console.log('Processing SSE event:', eventData);
+              yield line + '\n';
+            } catch (parseError) {
+              console.error('Error parsing SSE data:', parseError);
+              continue;
+            }
           }
         }
       }
@@ -170,7 +175,7 @@ export async function POST(request: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          const generator = fetchUploadSummaryUpdates(formData, wordResult.data, 500);
+          const generator = fetchUploadSummaryUpdates(formData, wordResult.data);
           
           for await (const chunk of generator) {
             controller.enqueue(encoder.encode(chunk + '\n'));
