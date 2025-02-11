@@ -220,13 +220,14 @@ export default function FileUploadForm({
         throw new Error('Unsupported file type. Supported types: MP4, WebM, QuickTime');
       }
 
-      // Get upload URL from backend using the api function
+      // Get upload URL from azure storage
       const responseData = await getUploadUrl(file.name, file.size);
 
       if (!responseData.data?.url || !responseData.data?.fileId || !responseData.data?.blobName) {
         throw new Error('Invalid response from server');
       }
 
+      // the response data is stored for referencing the file in the future
       const { url, fileId, blobName } = responseData.data;
 
       // Upload directly to Azure
@@ -239,6 +240,7 @@ export default function FileUploadForm({
       }
 
       const API_URL = getApiUrl();
+      // we pass to the server the reference to the blob name and the number of words
       const eventSource = new EventSource(`${API_URL}/api/upload-summary-sse?fileId=${fileId}&blobName=${blobName}&words=${numberOfWords}`);
       eventSourceRef.current = eventSource;
 
