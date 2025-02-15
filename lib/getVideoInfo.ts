@@ -13,13 +13,14 @@ interface ApiResponse {
     };
     channel: string;
     description: string;
+    duration: number;
   };
 }
 
 export default async function getInfo(url: string): Promise<VideoInfo | null> {
   try {
     const API_URL = getApiUrl();
-    const response = await fetch(`${API_URL}/api/info?url=${encodeURIComponent(url)}`, {
+    const response = await fetch(`${API_URL}/api/video/metadata?url=${encodeURIComponent(url)}`, {
       headers: {
         "Accept": "application/json",
       },
@@ -37,9 +38,10 @@ export default async function getInfo(url: string): Promise<VideoInfo | null> {
     return {
       id: data.id,
       title: data.title,
-      thumbnail: data.thumbnail,
+      thumbnailUrl: data.thumbnail.url,
       channel: data.channel,
-      description: data.description
+      description: data.description,
+      duration: data.duration
     };
   } catch (error) {
     console.error('Error fetching video info:', error);

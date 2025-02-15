@@ -33,10 +33,10 @@ async function handleUploadUrlRequest(request: NextRequest, params: { fileName: 
   }
 
   const API_URL = getApiUrl();
-  console.log('Calling backend API:', `${API_URL}/api/upload-url`);
+  console.log('Calling backend API:', `${API_URL}/api/azure/upload/url`);
   
   try {
-    const response = await fetch(`${API_URL}/api/upload-url`, {
+    const response = await fetch(`${API_URL}/api/azure/upload/url`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -87,7 +87,7 @@ async function handleUploadUrlRequest(request: NextRequest, params: { fileName: 
 }
 
 /**
- * GET /api/upload-url
+ * GET /api/azure/upload/url
  */
 export async function GET(request: NextRequest) {
   try {
@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
 
     return handleUploadUrlRequest(request, { fileName, fileSize });
   } catch (error) {
-    console.error('Error in GET /api/upload-url:', error);
+    console.error('Error in GET /api/azure/upload/url:', error);
     return createErrorResponse({
       message: 'Internal server error',
       status: 500
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * POST /api/upload-url
+ * POST /api/azure/upload/url
  */
 export async function POST(request: NextRequest) {
   try {
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
 
     return handleUploadUrlRequest(request, { fileName, fileSize });
   } catch (error) {
-    console.error('Error in POST /api/upload-url:', error);
+    console.error('Error in POST /api/azure/upload/url:', error);
     return createErrorResponse({
       message: 'Internal server error',
       status: 500

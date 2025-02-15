@@ -50,7 +50,7 @@ export default function InputSelector() {
       const API_URL = getApiUrl();
       
       // First fetch video info
-      const infoResponse = await fetch(`${API_URL}/api/info?url=${encodeURIComponent(url)}`, {
+      const infoResponse = await fetch(`${API_URL}/api/video/metadata?url=${encodeURIComponent(url)}`, {
         headers: {
           'Accept': 'application/json',
         },
@@ -71,7 +71,7 @@ export default function InputSelector() {
 
       // Then start the summary stream
       const response = await fetch(
-        `${API_URL}/api/youtube-summary-sse?url=${encodeURIComponent(url)}&wordCount=${numberOfWords}`,
+        `${API_URL}/api/youtube/summary/stream?url=${encodeURIComponent(url)}&words=${numberOfWords}`,
         {
           headers: {
             'Accept': 'text/event-stream',

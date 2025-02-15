@@ -41,7 +41,7 @@ export default function InputField() {
 
       // Create FormData with the file
       const formData = new FormData();
-      formData.append('video', file);
+      formData.append('file', file);
 
       // Create upload progress tracker
       const xhr = new XMLHttpRequest();
@@ -72,7 +72,7 @@ export default function InputField() {
 
         // Start the upload
         const API_URL = getApiUrl();
-        xhr.open('POST', `${API_URL}/api/upload-summary-sse?words=${numberOfWords}`);
+        xhr.open('POST', `${API_URL}/api/upload/summary/stream?words=${numberOfWords}`);
         xhr.setRequestHeader('Accept', 'text/event-stream');
         xhr.responseType = 'text';
         xhr.send(formData);

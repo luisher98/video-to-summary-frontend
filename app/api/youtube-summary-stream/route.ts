@@ -57,10 +57,10 @@ async function* fetchSummaryUpdates(
 
   // First, verify the video info
   try {
-    console.log('Fetching video info from:', `${API_URL}/api/info?url=${encodeURIComponent(url)}`);
+    console.log('Fetching video info from:', `${API_URL}/api/video/metadata?url=${encodeURIComponent(url)}`);
     
     const infoResponse = await fetch(
-      `${API_URL}/api/info?url=${encodeURIComponent(url)}`,
+      `${API_URL}/api/video/metadata?url=${encodeURIComponent(url)}`,
       {
         headers: {
           'Accept': 'application/json',

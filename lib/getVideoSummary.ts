@@ -13,75 +13,43 @@ function isSummaryUpdate(value: unknown): value is SummaryProcessingUpdate {
   );
 }
 
-export default async function* getSummary(
-  url: string,
-  words: number
-): AsyncGenerator<SummaryProcessingUpdate> {
+/**
+ * Generator function that yields summary updates from the YouTube summary API
+ */
+export default async function* getVideoSummary(url: string, words: number): AsyncGenerator<SummaryProcessingUpdate> {
+  const API_URL = getApiUrl();
+  const eventSource = new EventSource(
+    `${API_URL}/api/youtube/summary/stream?url=${encodeURIComponent(url)}&words=${words}`
+  );
+
   try {
-    const API_URL = getApiUrl();
-    const response = await fetch(
-      `${API_URL}/api/youtube-summary-sse?url=${url}&words=${words}`,
-      {
-        headers: {
-          'Accept': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-        }
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch summary: ${response.statusText}`);
-    }
-
-    if (!response.body) {
-      throw new Error('Response body is null or undefined');
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
     while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      if (value) {
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        
-        // Keep the last line in the buffer if it's not complete
-        buffer = lines.pop() ?? '';
-
-        for (const line of lines) {
-          if (line.trim() === '') continue;
-          if (!line.startsWith('data: ')) continue;
-          
+      const update = await new Promise<SummaryProcessingUpdate>((resolve, reject) => {
+        eventSource.onmessage = (event: MessageEvent<string>) => {
           try {
-            const jsonStr = line.slice(6); // Remove 'data: ' prefix
-            const parsed = JSON.parse(jsonStr) as unknown;
-            if (isSummaryUpdate(parsed)) {
-              yield parsed;
+            const data = JSON.parse(event.data) as unknown;
+            if (isSummaryUpdate(data)) {
+              resolve(data);
+            } else {
+              reject(new Error('Invalid update format received'));
             }
-          } catch {
-            // Ignore parsing errors
+          } catch (error) {
+            reject(error);
           }
-        }
-      }
-    }
+        };
 
-    // Process any remaining data in the buffer
-    if (buffer.trim() && buffer.startsWith('data: ')) {
-      try {
-        const jsonStr = buffer.slice(6);
-        const parsed = JSON.parse(jsonStr) as unknown;
-        if (isSummaryUpdate(parsed)) {
-          yield parsed;
-        }
-      } catch {
-        // Ignore parsing errors
+        eventSource.onerror = (error: Event) => {
+          reject(new Error(error instanceof ErrorEvent ? error.message : 'EventSource error'));
+        };
+      });
+
+      yield update;
+
+      if (update.status === 'done' || update.status === 'error') {
+        break;
       }
     }
-  } catch (error) {
-    throw error;
+  } finally {
+    eventSource.close();
   }
 }

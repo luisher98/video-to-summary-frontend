@@ -241,7 +241,7 @@ export default function FileUploadForm({
 
       const API_URL = getApiUrl();
       // we pass to the server the reference to the blob name and the number of words
-      const eventSource = new EventSource(`${API_URL}/api/upload-summary-sse?fileId=${fileId}&blobName=${blobName}&words=${numberOfWords}`);
+      const eventSource = new EventSource(`${API_URL}/api/azure/summary/stream?fileId=${fileId}&blobName=${blobName}&words=${numberOfWords}`);
       eventSourceRef.current = eventSource;
 
       let retryCount = 0;
@@ -253,6 +253,15 @@ export default function FileUploadForm({
           console.log('Received SSE data:', sseData);
           
           if (sseData && typeof sseData === 'object') {
+            if (sseData.status === 'error') {
+              // Handle error before attempting to update summary
+              setIsLoading(false);
+              eventSource.close();
+              eventSourceRef.current = null;
+              toast.error(sseData.message || 'Processing failed');
+              return;
+            }
+            
             // Update the summary in the VideoContext
             setSummary(prev => [...prev, sseData]);
             
@@ -260,8 +269,6 @@ export default function FileUploadForm({
               setIsLoading(false);
               eventSource.close();
               eventSourceRef.current = null;
-            } else if (sseData.status === 'error') {
-              throw new Error(sseData.message || 'Processing failed');
             } else if ('progress' in sseData && typeof sseData.progress === 'number') {
               // Calculate total progress: 90% for upload + 10% for processing
               const processingProgress = sseData.progress * 0.1; // 10% of total

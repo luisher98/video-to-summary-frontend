@@ -20,7 +20,7 @@ interface UploadUrlResponse {
  */
 export async function getUploadUrl(fileName: string, fileSize: number): Promise<UploadUrlResponse> {
   const API_URL = getApiUrl();
-  const response = await fetch(`${API_URL}/api/upload-url`, {
+  const response = await fetch(`${API_URL}/api/azure/upload/url`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

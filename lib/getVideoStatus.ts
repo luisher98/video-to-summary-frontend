@@ -10,7 +10,7 @@ interface ApiResponse {
 export default async function getVideoStatus(url: string): Promise<boolean> {
   try {
     const API_URL = getApiUrl();
-    const response = await fetch(`${API_URL}/api/info?url=${encodeURIComponent(url)}`, {
+    const response = await fetch(`${API_URL}/api/video/metadata?url=${encodeURIComponent(url)}`, {
       headers: {
         "Accept": "application/json",
       },
