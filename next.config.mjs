@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  output: 'standalone', // Enable standalone output for Docker
   experimental: {
     // Enable React 19 features
     react: {
