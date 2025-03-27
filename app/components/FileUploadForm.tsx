@@ -16,7 +16,7 @@ interface FileUploadFormProps {
   setIsLoading: (loading: boolean) => void;
   numberOfWords: number;
   setNumberOfWords: (words: number) => void;
-  setSummary: (summary: string) => void;
+  setSummary: (value: SummaryProcessingUpdate[] | ((prev: SummaryProcessingUpdate[]) => SummaryProcessingUpdate[])) => void;
 }
 
 interface UploadUrlResponse {
